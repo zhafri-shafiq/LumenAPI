@@ -13,7 +13,7 @@ class CourseController extends Controller
 	{
 		// $courses = Course::all();
 		$courses["data"] = [
-			DB::select('SELECT admin_coursemaker_courses.name, admin_coursemaker_courses.description, system_files.file_name FROM admin_coursemaker_courses, system_files'),
+			DB::select("SELECT admin_coursemaker_courses.name, admin_coursemaker_courses.description, system_files.attachment_id, system_files.attachment_type FROM admin_coursemaker_courses, system_files WHERE system_files.attachment_id = admin_coursemaker_courses.id AND system_files.attachment_type LIKE '%course';"),
 
 
 			// DB::select('SELECT file_name FROM system_files')
@@ -26,8 +26,10 @@ class CourseController extends Controller
 	public function getCourse($id)
 	{
 		// $course = Course::find($id);
+		$course["data"] = [
+			DB::select("SELECT admin_coursemaker_lessons.name FROM admin_coursemaker_lessons WHERE admin_coursemaker_lessons.course_id = $id;"),
+		];
 
-		$course = DB::select("SELECT name, description FROM admin_coursemaker_courses WHERE id = $id");
 		return response()-> json($course);
 	}
 

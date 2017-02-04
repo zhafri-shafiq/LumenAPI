@@ -5,18 +5,23 @@ namespace App\Http\Controllers;
 use App\Lesson;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class LessonController extends Controller
 {
 	public function index()
 	{
-		$lessons = Lesson::all();
+		$lessons["data"] = [
+			DB::select("SELECT admin_coursemaker_lessons.name FROM admin_coursemaker_lessons;"),
+		];
 		return response()->json($lessons);
 	}
 
 	public function getLesson($id)
 	{
-		$lesson = Lesson::find($id);
+		$lesson["data"] = [
+			DB::select("SELECT admin_coursemaker_lessons.name, system_files.attachment_id, system_files.attachment_type FROM admin_coursemaker_lessons, system_files WHERE admin_coursemaker_lessons.id = $id AND system_files.attachment_id = $id AND system_files.attachment_type LIKE '%lesson';"),
+		];
 		return response()-> json($lesson);
 	}
 
