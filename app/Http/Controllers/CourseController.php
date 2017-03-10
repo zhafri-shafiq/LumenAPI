@@ -15,18 +15,18 @@ class CourseController extends Controller
 
 		//try with natural join
 
-		$courses["data"] = [
+		$courses["data"] = (
 			DB::select(
 				"SELECT admin_coursemaker_courses.name, admin_coursemaker_courses.description,
 				a.file_name AS 'image', b.file_name AS 'video'
 
 				FROM admin_coursemaker_courses, system_files a, system_files b
 
-				WHERE a.attachment_id = admin_coursemaker_courses.id 
+				WHERE admin_coursemaker_courses.id = a.attachment_id 
 				AND a.attachment_type LIKE '%course'
 				 AND a.content_type LIKE 'image%' AND b.attachment_id = admin_coursemaker_courses.id AND b.attachment_type LIKE '%course'
-				 AND b.content_type LIKE 'video%'"),
-		];
+				 AND b.content_type LIKE 'video%'")
+		);
 
 		//var_dump($courses);
 
@@ -158,8 +158,14 @@ class CourseController extends Controller
 		
 
 
-		$course["data"] = [
+		$course["lesson"] = [
 			DB::select("SELECT admin_coursemaker_lessons.name FROM admin_coursemaker_lessons WHERE admin_coursemaker_lessons.course_id = $id;"),
+		];
+
+		$course["quiz"] = [
+			DB::select("SELECT admin_coursemaker_quizzes.name
+				FROM admin_coursemaker_quizzes
+				WHERE admin_coursemaker_quizzes.course_id = $id;")
 		];
 		return response()-> json($course);
 

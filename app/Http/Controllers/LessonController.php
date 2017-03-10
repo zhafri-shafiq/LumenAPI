@@ -20,7 +20,11 @@ class LessonController extends Controller
 	public function getLesson($id)
 	{
 		$lesson["data"] = [
-			DB::select("SELECT admin_coursemaker_lessons.name, system_files.attachment_id, system_files.attachment_type FROM admin_coursemaker_lessons, system_files WHERE admin_coursemaker_lessons.id = $id AND system_files.attachment_id = $id AND system_files.attachment_type LIKE '%lesson';"),
+			DB::select("SELECT admin_coursemaker_lessons.name, a.file_name AS 'image', b.file_name AS 'video' 
+
+				FROM admin_coursemaker_lessons, system_files a, system_files b
+
+				WHERE admin_coursemaker_lessons.id = $id AND a.attachment_id = $id AND a.attachment_type LIKE '%lesson' AND b.attachment_id = $id AND b.attachment_type LIKE '%lesson' AND a.content_type LIKE 'image%' AND b.content_type LIKE 'video%';"),
 		];
 		return response()-> json($lesson);
 	}
