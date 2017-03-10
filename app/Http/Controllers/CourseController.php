@@ -158,15 +158,15 @@ class CourseController extends Controller
 		
 
 
-		$course["lesson"] = [
-			DB::select("SELECT admin_coursemaker_lessons.name FROM admin_coursemaker_lessons WHERE admin_coursemaker_lessons.course_id = $id;"),
-		];
+		$course["lesson"] = (
+			DB::select("SELECT admin_coursemaker_lessons.name FROM admin_coursemaker_lessons WHERE admin_coursemaker_lessons.course_id = $id;")
+		);
 
-		$course["quiz"] = [
+		$course["quiz"] = (
 			DB::select("SELECT admin_coursemaker_quizzes.name
 				FROM admin_coursemaker_quizzes
 				WHERE admin_coursemaker_quizzes.course_id = $id;")
-		];
+		);
 		return response()-> json($course);
 
 
