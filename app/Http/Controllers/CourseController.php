@@ -17,15 +17,14 @@ class CourseController extends Controller
 
 		$courses["data"] = (
 			DB::select(
-				"SELECT admin_coursemaker_courses.name, admin_coursemaker_courses.description,
-				a.file_name AS 'image', b.file_name AS 'video'
+				"SELECT itrainasia_coursepad_course.title, itrainasia_coursepad_course.description,
+				a.file_name AS 'image'
 
-				FROM admin_coursemaker_courses, system_files a, system_files b
+				FROM itrainasia_coursepad_course, system_files a
 
-				WHERE admin_coursemaker_courses.id = a.attachment_id 
-				AND a.attachment_type LIKE '%course'
-				 AND a.content_type LIKE 'image%' AND b.attachment_id = admin_coursemaker_courses.id AND b.attachment_type LIKE '%course'
-				 AND b.content_type LIKE 'video%'")
+				WHERE itrainasia_coursepad_course.id = a.attachment_id 
+				AND a.attachment_type LIKE 'itrainasia%course'
+			")
 		);
 
 		//var_dump($courses);
@@ -158,15 +157,15 @@ class CourseController extends Controller
 		
 
 
-		$course["lesson"] = (
-			DB::select("SELECT admin_coursemaker_lessons.name FROM admin_coursemaker_lessons WHERE admin_coursemaker_lessons.course_id = $id;")
+		$course["data"] = (
+			DB::select("SELECT itrainasia_coursepad_lesson.title, itrainasia_coursepad_lesson.description FROM itrainasia_coursepad_lesson WHERE itrainasia_coursepad_lesson.course_id = $id;")
 		);
 
-		$course["quiz"] = (
-			DB::select("SELECT admin_coursemaker_quizzes.name
-				FROM admin_coursemaker_quizzes
-				WHERE admin_coursemaker_quizzes.course_id = $id;")
-		);
+		// $course["quiz"] = (
+		// 	DB::select("SELECT admin_coursemaker_quizzes.name
+		// 		FROM admin_coursemaker_quizzes
+		// 		WHERE admin_coursemaker_quizzes.course_id = $id;")
+		// );
 		return response()-> json($course);
 
 

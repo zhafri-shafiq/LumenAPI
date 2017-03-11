@@ -28,6 +28,10 @@ $app->delete('api/course/{id}', 'CourseController@deleteCourse');
 
 
 
+
+
+
+
 $app->get('api/lesson', 'LessonController@index');
 
 $app->get('api/lesson/{id}', 'LessonController@getLesson');

@@ -12,21 +12,51 @@ class LessonController extends Controller
 	public function index()
 	{
 		$lessons["data"] = (
-			DB::select("SELECT admin_coursemaker_lessons.name FROM admin_coursemaker_lessons;")
+			DB::select("SELECT itrainasia_coursepad_lesson.title, itrainasia_coursepad_lesson.description FROM itrainasia_coursepad_lesson;")
 		);
 		return response()->json($lessons);
 	}
 
 	public function getLesson($id)
 	{
-		$lesson["data"] = (
-			DB::select("SELECT admin_coursemaker_lessons.name, a.file_name AS 'image', b.file_name AS 'video' 
+		$lesson["title"] = 
+			DB::select("SELECT itrainasia_coursepad_lesson.title 
 
-				FROM admin_coursemaker_lessons, system_files a, system_files b
+				FROM itrainasia_coursepad_lesson
 
-				WHERE admin_coursemaker_lessons.id = $id AND a.attachment_id = $id AND a.attachment_type LIKE '%lesson' AND b.attachment_id = $id AND b.attachment_type LIKE '%lesson' AND a.content_type LIKE 'image%' AND b.content_type LIKE 'video%';")
+				WHERE itrainasia_coursepad_lesson.id = $id ;")
+		;
+
+		
+
+		$lesson["videos"] = (
+			DB::select("SELECT file_name, disk_name AS 'file_url'
+				FROM system_files 
+				WHERE attachment_type LIKE 'itrainasia%lesson'
+				AND attachment_id = $id")
+			);
+
+		$lesson["content"] = (
+			DB::select("SELECT itrainasia_coursepad_lesson.content
+				FROM itrainasia_coursepad_lesson
+				WHERE itrainasia_coursepad_lesson.id = $id ;")
 		);
-		return response()-> json($lesson);
+		// $lesson["data"] = DB::table('itrainasia_coursepad_lesson')
+		// 					->join('system_files', function($join) {
+		// 						$join->on('system_files.attachment_id', '=', $id)->orOn('system_files.attachment_type', 'like', 'itrainasia%lesson');
+		// 					})
+		// 					->select('itrainasia_coursepad_lesson.title', 'itrainasia_coursepad_lesson.content', 'a.file_name')
+		// 					->get();
+
+// 		$lesson_sel = array();
+// for ($i = 0; $i < count($lesson["title"]); $i++) {
+// 	$lesson_sel[] = $lesson["title"];
+// 	$lesson_sel[] = $lesson["videos"];
+// 	$lesson_sel[] = $lesson["content"];
+
+// }
+
+		return response()->json($lesson);
 	}
 
 	public function saveLesson(Request $request)
